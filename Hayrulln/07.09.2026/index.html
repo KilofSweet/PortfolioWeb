@@ -1,1185 +1,192 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kilo - portfolio</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Noto+Sans+SC:wght@300;400;700&display=swap');
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  :root {
-    --bg-1: #b8d4f0;
-    --bg-2: #d4e4f7;
-    --bg-3: #e8f0fa;
-    --glass: rgba(255, 255, 255, 0.6);
-    --glass-strong: rgba(255, 255, 255, 0.8);
-    --border: rgba(255, 255, 255, 0.8);
-    --text: #3a5a7c;
-    --text-dark: #1e3a5f;
-    --accent: #6ba3d6;
-    --accent-2: #8fb8e0;
-    --shadow: 0 12px 40px rgba(100, 140, 180, 0.3);
-    --shadow-soft: 0 4px 16px rgba(100, 140, 180, 0.15);
-  }
-
-  html, body {
-    font-family: 'Quicksand', 'Noto Sans SC', sans-serif;
-    color: var(--text);
-    overflow-x: hidden;
-    min-height: 100vh;
-  }
-
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: linear-gradient(135deg, #a8c8e8 0%, #c8ddf0 25%, #e0ecf7 50%, #b8d4f0 75%, #9cc0e0 100%);
-    background-size: 400% 400%;
-    animation: gradientShift 20s ease infinite;
-    z-index: -3;
-  }
-
-  @keyframes gradientShift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-  }
-
-  #webgl-canvas {
-    position: fixed;
-    inset: 0;
-    z-index: -2;
-    pointer-events: none;
-  }
-
-  .deco {
-    position: fixed;
-    pointer-events: none;
-    z-index: -1;
-    opacity: 0.5;
-    font-size: 24px;
-    color: white;
-    animation: float 8s ease-in-out infinite;
-  }
-  @keyframes float {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-20px) rotate(180deg); }
-  }
-
-  /* Main container - INCREASED SIZE */
-  .app {
-    max-width: 1100px;
-    margin: 40px auto;
-    padding: 0 20px;
-    position: relative;
-    z-index: 1;
-  }
-
-  .window {
-    background: var(--glass);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    box-shadow: var(--shadow);
-    overflow: hidden;
-    margin-bottom: 24px;
-  }
-
-  .window-bar {
-    background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(200,220,240,0.5));
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    border-bottom: 1px solid var(--border);
-  }
-  .window-dots {
-    display: flex;
-    gap: 6px;
-  }
-  .window-dots span {
-    width: 12px; height: 12px;
-    border-radius: 50%;
-    background: white;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  }
-  .window-dots span:nth-child(1) { background: #ff6b6b; }
-  .window-dots span:nth-child(2) { background: #ffd93d; }
-  .window-dots span:nth-child(3) { background: #6bcb77; }
-
-  .window-title {
-    flex: 1;
-    text-align: center;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-dark);
-    letter-spacing: 0.5px;
-  }
-
-  .window-controls {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  
-  .lang-switcher-inline button {
-    background: transparent;
-    border: none;
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--text);
-    transition: all 0.2s;
-    letter-spacing: 0.5px;
-  }
-  .lang-switcher-inline button.active {
-    background: var(--accent);
-    color: white;
-  }
-  .lang-switcher-inline button:hover:not(.active) {
-    background: rgba(0,0,0,0.05);
-  }
-
-  .window-controls button.win-btn {
-    background: white;
-    border: 1px solid var(--border);
-    width: 24px; height: 24px;
-    border-radius: 6px;
-    font-family: inherit;
-    color: var(--text);
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-  }
-  .window-controls button.win-btn:hover { background: var(--accent); color: white; }
-
-  .address-bar {
-    background: rgba(255,255,255,0.5);
-    padding: 10px 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-bottom: 1px solid var(--border);
-  }
-  .address-bar .nav-arrows {
-    display: flex;
-    gap: 6px;
-    color: var(--text);
-    font-size: 14px;
-  }
-  .address-bar .url {
-    flex: 1;
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 6px 16px;
-    font-size: 12px;
-    color: var(--text);
-    font-family: 'Space Mono', monospace;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .address-bar .url .star { color: var(--accent); }
-
-  .header-info {
-    padding: 14px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
-    border-bottom: 1px solid var(--border);
-  }
-  .header-info .username {
-    font-size: 14px;
-    color: var(--text);
-  }
-  .header-info .username strong {
-    color: var(--text-dark);
-    font-weight: 700;
-  }
-  .header-actions {
-    display: flex;
-    gap: 10px;
-  }
-  .btn-action {
-    background: white;
-    border: 1px solid var(--border);
-    padding: 8px 18px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-dark);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: all 0.25s;
-    box-shadow: var(--shadow-soft);
-    text-decoration: none;
-  }
-  .btn-action:hover {
-    background: var(--accent);
-    color: white;
-    transform: translateY(-2px);
-    
-  }
-  .btn-action.primary {
-    background: var(--accent);
-    color: white;
-    border-color: var(--accent);
-  }
-  .btn-action.primary:hover {
-    background: var(--text-dark);
-    border-color: var(--text-dark);
-  }
-
-  .tabs {
-    display: flex;
-    gap: 8px;
-    padding: 16px 20px 0;
-    flex-wrap: wrap;
-  }
-  .tab {
-    background: white;
-    border: 1px solid var(--border);
-    padding: 8px 20px;
-    border-radius: 20px;
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text);
-    transition: all 0.25s;
-    box-shadow: var(--shadow-soft);
-  }
-  .tab:hover { transform: translateY(-2px); }
-  .tab.active {
-    background: var(--accent);
-    color: white;
-    border-color: var(--accent);
-  }
-
-  .content {
-    padding: 24px 20px 28px;
-  }
-
-  .tab-content { display: none; }
-  .tab-content.active { display: block; animation: fadeIn 0.4s ease; }
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .profile-header {
-    display: flex;
-    gap: 24px;
-    align-items: center;
-    flex-wrap: wrap;
-    margin-bottom: 24px;
-  }
-  .avatar {
-    width: 140px; height: 140px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent), var(--accent-2));
-    border: 4px solid white;
-    box-shadow: var(--shadow);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 64px;
-    overflow: hidden;
-    position: relative;
-  }
-  .avatar::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4), transparent 60%);
-  }
-  .profile-info h1 {
-    font-size: 42px;
-    font-weight: 700;
-    color: var(--text-dark);
-    font-style: italic;
-    letter-spacing: -1px;
-    margin-bottom: 4px;
-  }
-  .profile-info .meta {
-    font-size: 14px;
-    color: var(--text);
-  }
-  .profile-info .meta span {
-    margin: 0 4px;
-    opacity: 0.5;
-  }
-
-  .profile-desc {
-    background: rgba(255,255,255,0.4);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px 20px;
-    font-size: 14px;
-    line-height: 1.7;
-    margin-bottom: 20px;
-  }
-
-  .likes-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 20px;
-  }
-  .like-box {
-    background: rgba(255,255,255,0.5);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px 20px;
-  }
-  .like-box h3 {
-    display: inline-block;
-    background: var(--accent);
-    color: white;
-    padding: 4px 14px;
-    border-radius: 12px;
-    font-size: 13px;
-    font-weight: 600;
-    margin-right: 8px;
-  }
-  .like-box.dislike h3 { background: #d4a5a5; }
-  .like-box p {
-    display: inline;
-    font-size: 14px;
-    color: var(--text);
-  }
-
-  .now-playing {
-    background: linear-gradient(90deg, var(--accent-2), var(--accent));
-    color: white;
-    padding: 10px 20px;
-    border-radius: 12px;
-    font-size: 13px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-    box-shadow: var(--shadow-soft);
-  }
-  .now-playing .bars {
-    display: flex;
-    gap: 3px;
-    align-items: flex-end;
-    height: 16px;
-  }
-  .now-playing .bars span {
-    width: 3px;
-    background: white;
-    border-radius: 2px;
-    animation: bar 1s ease-in-out infinite;
-  }
-  .now-playing .bars span:nth-child(1) { height: 60%; animation-delay: 0s; }
-  .now-playing .bars span:nth-child(2) { height: 100%; animation-delay: 0.2s; }
-  .now-playing .bars span:nth-child(3) { height: 40%; animation-delay: 0.4s; }
-  .now-playing .bars span:nth-child(4) { height: 80%; animation-delay: 0.1s; }
-  @keyframes bar {
-    0%, 100% { transform: scaleY(1); }
-    50% { transform: scaleY(0.4); }
-  }
-
-  .socials {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  .social-icon {
-    width: 44px; height: 44px;
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    color: var(--text-dark);
-    text-decoration: none;
-    transition: all 0.25s;
-    box-shadow: var(--shadow-soft);
-  }
-  .social-icon:hover {
-    background: var(--accent);
-    color: white;
-    transform: translateY(-3px) rotate(-5deg);
-  }
-
-  .skills-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 14px;
-  }
-  .skill-card {
-    background: rgba(255,255,255,0.5);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    transition: all 0.3s;
-    box-shadow: var(--shadow-soft);
-    position: relative;
-    overflow: hidden;
-  }
-  .skill-card::before {
-    content: '';
-    position: absolute;
-    top: -50%; left: -50%;
-    width: 200%; height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.4), transparent 60%);
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  .skill-card:hover::before { opacity: 1; }
-  .skill-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow);
-    border-color: var(--accent);
-  }
-  .skill-card .emoji {
-    font-size: 32px;
-    margin-bottom: 10px;
-  }
-  .skill-card h3 {
-    font-size: 18px;
-    color: var(--text-dark);
-    margin-bottom: 6px;
-    font-weight: 700;
-  }
-  .skill-card p {
-    font-size: 12px;
-    color: var(--text);
-    line-height: 1.5;
-  }
-
-  .blog-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .blog-item {
-    background: rgba(255,255,255,0.5);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: all 0.25s;
-    box-shadow: var(--shadow-soft);
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  .blog-item:hover {
-    transform: translateX(6px);
-    border-color: var(--accent);
-    background: rgba(255,255,255,0.7);
-  }
-  .blog-item .date {
-    font-size: 11px;
-    font-family: 'Space Mono', monospace;
-    color: var(--text);
-    opacity: 0.7;
-    min-width: 80px;
-  }
-  .blog-item h4 {
-    flex: 1;
-    font-size: 15px;
-    color: var(--text-dark);
-    font-weight: 600;
-    min-width: 200px;
-  }
-  .blog-item .tag {
-    background: var(--accent);
-    color: white;
-    padding: 4px 12px;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 1px;
-  }
-  .contact-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 12px;
-  }
-  .contact-item {
-    background: rgba(255,255,255,0.5);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px 20px;
-  }
-  .contact-item .lbl {
-    font-size: 11px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--text);
-    opacity: 0.7;
-    margin-bottom: 6px;
-  }
-  .contact-item a {
-    color: var(--text-dark);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 14px;
-  }
-
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(30, 58, 95, 0.4);
-    backdrop-filter: blur(8px);
-    z-index: 1000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-  .modal-overlay.active { display: flex; }
-  .modal {
-    background: var(--glass-strong);
-    backdrop-filter: blur(24px);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    max-width: 650px;
-    width: 100%;
-    max-height: 80vh;
-    overflow-y: auto;
-    box-shadow: var(--shadow);
-    animation: modalIn 0.3s ease;
-  }
-  @keyframes modalIn {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
-  }
-  .modal-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(255,255,255,0.4);
-    position: sticky;
-    top: 0;
-  }
-  .modal-header h3 {
-    font-size: 20px;
-    color: var(--text-dark);
-    font-weight: 700;
-  }
-  .modal-close {
-    background: white;
-    border: 1px solid var(--border);
-    width: 32px; height: 32px;
-    border-radius: 50%;    
-    font-size: 16px;
-    color: var(--text);
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .modal-close:hover { background: var(--accent); color: white; }
-  .modal-body { padding: 20px; }
-  .modal-body p {
-    font-size: 14px;
-    line-height: 1.7;
-    color: var(--text);
-    margin-bottom: 16px;
-  }
-  .portfolio-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .portfolio-item {
-    background: rgba(255,255,255,0.5);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: all 0.2s;
-  }
-  .portfolio-item:hover {
-    background: var(--accent);
-    color: white;
-    transform: translateX(4px);
-  }
-
-  /* Footer - bottom right */
-  .footer {
-    text-align: right;
-    padding: 0 20px 20px;
-    font-size: 12px;
-    color: var(--text);
-    opacity: 0.7;
-    font-family: 'Space Mono', monospace;
-    letter-spacing: 1px;
-  }
-
-  @media (max-width: 768px) {
-    .app { margin: 20px auto; max-width: 100%; }
-    .likes-grid { grid-template-columns: 1fr; }
-    .profile-header { flex-direction: column; text-align: center; }
-    .profile-info h1 { font-size: 32px; }
-    .avatar { width: 110px; height: 110px; font-size: 48px; }
-    .window-title { display: none; }
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kilo - portfolio</title>
+  <!-- Подключение внешних стилей -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="custom-cursor"></div>
+  <div class="cursor-dot"></div>
+  <div class="cursor-ring"></div>
+  <canvas id="webgl-canvas"></canvas>
 
-<canvas id="webgl-canvas"></canvas>
+  <div class="deco" style="top:10%; left:5%; animation-delay:0s;">❄</div>
+  <div class="deco" style="top:20%; right:8%; animation-delay:2s; font-size:18px;">✦</div>
+  <div class="deco" style="top:60%; left:3%; animation-delay:4s;">✿</div>
+  <div class="deco" style="bottom:15%; right:5%; animation-delay:1s; font-size:20px;">❋</div>
+  <div class="deco" style="top:40%; right:3%; animation-delay:3s;">✧</div>
+  <div class="deco" style="bottom:30%; left:6%; animation-delay:5s; font-size:16px;">✶</div>
 
-<div class="deco" style="top:10%; left:5%; animation-delay:0s;">❄</div>
-<div class="deco" style="top:20%; right:8%; animation-delay:2s; font-size:18px;">✦</div>
-<div class="deco" style="top:60%; left:3%; animation-delay:4s;">✿</div>
-<div class="deco" style="bottom:15%; right:5%; animation-delay:1s; font-size:20px;">❋</div>
-<div class="deco" style="top:40%; right:3%; animation-delay:3s;">✧</div>
-<div class="deco" style="bottom:30%; left:6%; animation-delay:5s; font-size:16px;">✶</div>
-
-
-<div class="app">
-  <div class="window">
-    <div class="window-bar">
-      <div class="window-dots"><span></span><span></span><span></span></div>
-      <div class="window-title" data-i18n="window_title">Kilo: портфолио</div>
-      <div class="window-controls">
-        <div class="lang-switcher-inline">
-          <button data-lang="ru" class="active">RU</button>
-          <button data-lang="en">EN</button>
-          <button data-lang="cn">中文</button>
+  <div class="app">
+    <div class="window">
+      <div class="window-bar">
+        <div class="window-dots"><span></span><span></span><span></span></div>
+        <div class="window-title" data-i18n="window_title">Kilo: портфолио</div>
+        <div class="window-controls">
+          <div class="lang-switcher-inline">
+            <button data-lang="ru" class="active">RU</button>
+            <button data-lang="en">EN</button>
+            <button data-lang="cn">中文</button>
+          </div>
         </div>
       </div>
-    </div>
-    
-    <div class="address-bar">
-      <div class="nav-arrows">← → ⟳</div>
-      <div class="url">
-        <span>goodluckeveryone.com</span>
-        <span class="star">★</span>
+      
+      <div class="address-bar">
+        <div class="nav-arrows">← → ⟳</div>
+        <div class="url">
+          <span>goodluckeveryone.com</span>
+          <span class="star">★</span>
+        </div>
       </div>
-    </div>
 
-    <div class="header-info">
-      <div class="username">
-        <strong>@kilofsweet</strong> · <span data-i18n="posts_count">9 записей</span>
+      <div class="header-info">
+        <div class="username">
+          <strong>@kilofsweet</strong> · <span data-i18n="posts_count">9 записей</span>
+        </div>
+        <div class="header-actions">
+          <a href="mailto:mykilomail@gmail.com" class="btn-action" data-i18n="btn_message">✉ Написать</a>
+          <button class="btn-action primary" data-i18n="btn_follow">+ Подписаться</button>
+        </div>
       </div>
-      <div class="header-actions">
-        <a href="mailto:mykilomail@gmail.com" class="btn-action" data-i18n="btn_message">✉ Написать</a>
-        <button class="btn-action primary" data-i18n="btn_follow">+ Подписаться</button>
+
+      <div class="tabs">
+        <button class="tab active" data-tab="profile" data-i18n="tab_profile">profile</button>
+        <button class="tab" data-tab="skills" data-i18n="tab_skills">interests</button>
+        <button class="tab" data-tab="blog" data-i18n="tab_blog">notices</button>
+        <button class="tab" data-tab="contacts" data-i18n="tab_contacts">contacts</button>
       </div>
-    </div>
 
-    <div class="tabs">
-      <button class="tab active" data-tab="profile" data-i18n="tab_profile">profile</button>
-      <button class="tab" data-tab="skills" data-i18n="tab_skills">interests</button>
-      <button class="tab" data-tab="blog" data-i18n="tab_blog">notices</button>
-      <button class="tab" data-tab="contacts" data-i18n="tab_contacts">contacts</button>
-    </div>
+      <div class="content">
+        <!-- PROFILE TAB -->
+        <div class="tab-content active" id="tab-profile">
+          <div class="profile-header">
+            <div class="avatar">
+              <img src="ava.jpg" alt="Avatar">
+            </div>
+            <div class="profile-info">
+              <h1>Kilo</h1>
+              <div class="meta">
+                <span data-i18n="meta_pronouns">he/him</span>
+                <span>·</span>
+                <span data-i18n="meta_nationality">russian</span>
+                <span>·</span>
+                <span data-i18n="meta_role">student · developer</span>
+              </div>
+            </div>
+          </div>
 
-    <div class="content">
-      <!-- PROFILE TAB -->
-      <div class="tab-content active" id="tab-profile">
-        <div class="profile-header">
-          <div class="avatar"></div>
-          <div class="profile-info">
-            <h1>Kilo</h1>
-            <div class="meta">
-              <span data-i18n="meta_pronouns">he/him</span>
-              <span>·</span>
-              <span data-i18n="meta_nationality">russian</span>
-              <span>·</span>
-              <span data-i18n="meta_role">student · developer</span>
+          <div class="profile-desc" data-i18n="profile_desc">
+            Здравствуйте ♡ Я Марат Хайруллин, также известен как Kilo или KilofSweet. Мне 19 лет и я увлекаюсь изучением всего, начиная 3D, заканчивая БД. Люблю монтировать и веду свой ютуб канал, буду рад если подпишитесь. А ещё шейдеры это круто, Vulkan и OpenGL &lt;3
+          </div>
+
+          <div class="likes-grid">
+            <div class="like-box">
+              <h3 data-i18n="likes_title">Likes</h3>
+              <p data-i18n="likes_list">веб-дизайн, музыка, шейдеры, видеоигры, ночной кодинг, аниме-эстетика</p>
+            </div>
+            <div class="like-box dislike">
+              <h3 data-i18n="dislikes_title">Dislikes</h3>
+              <p data-i18n="dislikes_list">баги, понедельники, медленный интернет</p>
+            </div>
+          </div>
+
+          <div class="now-playing">
+            <div class="bars"><span></span><span></span><span></span><span></span></div>
+            <span data-i18n="now_playing">♪ Сейчас играет: WR3CK3D - Ритуал ♪</span>
+          </div>
+
+          <div class="socials">
+            <a href="https://youtube.com/@kilofsweet" target="_blank" class="social-icon" title="YouTube">▶</a>
+            <a href="https://t.me/kilofsweet" target="_blank" class="social-icon" title="Telegram">✈</a>
+            <a href="https://github.com/KilofSweet" target="_blank" class="social-icon" title="GitHub">⌘</a>
+            <a href="mailto:mykilomail@gmail.com" class="social-icon" title="Email">✉</a>
+            <a href="#" class="social-icon" title="Pinterest">✦</a>
+          </div>
+        </div>
+
+        <!-- SKILLS TAB -->
+        <div class="tab-content" id="tab-skills">
+          <div class="skills-grid">
+            <div class="skill-card" data-type="skill" data-key="frontend">
+              <div class="emoji">※</div>
+              <h3 data-i18n="skill_1_title">Frontend</h3>
+              <p data-i18n="skill_1_desc">UI/UX дизайн, Figma, Photoshop</p>
+            </div>
+            <div class="skill-card" data-type="skill" data-key="backend">
+              <div class="emoji">⁜</div>
+              <h3 data-i18n="skill_2_title">Backend</h3>
+              <p data-i18n="skill_2_desc">Python, Java, C, Vulkan, OpenGL, БД (SQL Power Architect, pgAdmin)</p>
+            </div>
+            <div class="skill-card" data-type="skill" data-key="design">
+              <div class="emoji">✻</div>
+              <h3 data-i18n="skill_3_title">Design</h3>
+              <p data-i18n="skill_3_desc">Визуальная композиция, UI/UX концепции, работа с графикой</p>
+            </div>
+            <div class="skill-card" data-type="skill" data-key="motion">
+              <div class="emoji">✣</div>
+              <h3 data-i18n="skill_4_title">Motion</h3>
+              <p data-i18n="skill_4_desc">After Effects, Premiere Pro, DaVinci Resolve, Blender</p>
             </div>
           </div>
         </div>
 
-        <div class="profile-desc" data-i18n="profile_desc">
-          Здравствуйте ♡ Я Марат Хайруллин, также известен как Kilo или KilofSweet. Мне 19 лет и я увлекаюсь изучением всего, начиная 3D, заканчивая БД. Люблю монтировать и веду свой ютуб канал, буду рад если подпишитесь. А ещё шейдеры это круто, Vulkan и OpenGL &lt;3
-        </div>
-
-        <div class="likes-grid">
-          <div class="like-box">
-            <h3 data-i18n="likes_title">Likes</h3>
-            <p data-i18n="likes_list">веб-дизайн, музыка, шейдеры, видеоигры, ночной кодинг, аниме-эстетика</p>
-          </div>
-          <div class="like-box dislike">
-            <h3 data-i18n="dislikes_title">Dislikes</h3>
-            <p data-i18n="dislikes_list">баги, понедельники, медленный интернет</p>
+        <!-- BLOG TAB -->
+        <div class="tab-content" id="tab-blog">
+          <div class="blog-list">
+            <div class="blog-item" data-type="blog" data-key="blog1">
+              <span class="date">2026.10.15</span>
+              <h4 data-i18n="blog_1_title">Как ходить</h4>
+              <span class="tag">LIFE</span>
+            </div>
           </div>
         </div>
 
-        <div class="now-playing">
-          <div class="bars"><span></span><span></span><span></span><span></span></div>
-          <span data-i18n="now_playing">♪ Сейчас играет: WR3CK3D - Ритуал ♪</span>
-        </div>
-
-        <div class="socials">
-          <a href="https://youtube.com/@kilofsweet" target="_blank" class="social-icon" title="YouTube">▶</a>
-          <a href="https://t.me/kilofsweet" target="_blank" class="social-icon" title="Telegram">✈</a>
-          <a href="https://github.com/KilofSweet" target="_blank" class="social-icon" title="GitHub">⌘</a>
-          <a href="mailto:mykilomail@gmail.com" class="social-icon" title="Email">✉</a>
-          <a href="#" class="social-icon" title="Pinterest">✦</a>
-        </div>
-      </div>
-
-      <!-- SKILLS TAB -->
-      <div class="tab-content" id="tab-skills">
-        <div class="skills-grid">
-          <div class="skill-card" data-type="skill" data-key="frontend">
-            <div class="emoji">※</div>
-            <h3 data-i18n="skill_1_title">Frontend</h3>
-            <p data-i18n="skill_1_desc">UI/UX дизайн, Figma, Photoshop</p>
-          </div>
-          <div class="skill-card" data-type="skill" data-key="backend">
-            <div class="emoji">⁜</div>
-            <h3 data-i18n="skill_2_title">Backend</h3>
-            <p data-i18n="skill_2_desc">Python, Java, C, Vulkan, OpenGL, БД (SQL Power Architect, pgAdmin)</p>
-          </div>
-          <div class="skill-card" data-type="skill" data-key="design">
-            <div class="emoji">✻</div>
-            <h3 data-i18n="skill_3_title">Design</h3>
-            <p data-i18n="skill_3_desc">Визуальная композиция, UI/UX концепции, работа с графикой</p>
-          </div>
-          <div class="skill-card" data-type="skill" data-key="motion">
-            <div class="emoji">✣</div>
-            <h3 data-i18n="skill_4_title">Motion</h3>
-            <p data-i18n="skill_4_desc">After Effects, Premiere Pro, DaVinci Resolve, Blender</p>
+        <!-- CONTACTS TAB -->
+        <div class="tab-content" id="tab-contacts">
+          <div class="contact-grid">
+            <div class="contact-item">
+              <div class="lbl" data-i18n="contact_email">Email</div>
+              <a href="mailto:mykilomail@gmail.com">mykilomail@gmail.com</a>
+            </div>
+            <div class="contact-item">
+              <div class="lbl">Telegram</div>
+              <a href="https://t.me/kilofsweet" target="_blank">@kilofsweet</a>
+            </div>
+            <div class="contact-item">
+              <div class="lbl">YouTube</div>
+              <a href="https://youtube.com/@kilofsweet" target="_blank">@kilofsweet</a>
+            </div>
+            <div class="contact-item">
+              <div class="lbl">GitHub</div>
+              <a href="https://github.com/KilofSweet" target="_blank">KilofSweet</a>
+            </div>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- BLOG TAB -->
-      <div class="tab-content" id="tab-blog">
-        <div class="blog-list">
-          <div class="blog-item" data-type="blog" data-key="blog1">
-            <span class="date">2024.10.15</span>
-            <h4 data-i18n="blog_1_title">WebGL: first experience with Three.js</h4>
-            <span class="tag">LIFE</span>
-          </div>
-        </div>
+    <div class="footer">made by kilo</div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modal-title"></h3>
+        <button class="modal-close" onclick="closeModal()">✕</button>
       </div>
-
-      <!-- CONTACTS TAB -->
-      <div class="tab-content" id="tab-contacts">
-        <div class="contact-grid">
-          <div class="contact-item">
-            <div class="lbl" data-i18n="contact_email">Email</div>
-            <a href="mailto:mykilomail@gmail.com">mykilomail@gmail.com</a>
-          </div>
-          <div class="contact-item">
-            <div class="lbl">Telegram</div>
-            <a href="https://t.me/kilofsweet" target="_blank">@kilofsweet</a>
-          </div>
-          <div class="contact-item">
-            <div class="lbl">YouTube</div>
-            <a href="https://youtube.com/@kilofsweet" target="_blank">@kilofsweet</a>
-          </div>
-          <div class="contact-item">
-            <div class="lbl">GitHub</div>
-            <a href="https://github.com/KilofSweet" target="_blank">KilofSweet</a>
-          </div>
-        </div>
+      <div class="modal-body">
+        <p id="modal-desc"></p>
+        <div class="portfolio-list" id="modal-portfolio"></div>
       </div>
     </div>
   </div>
 
-  <div class="footer">made by kilo</div>
-</div>
-
-<!-- Modal -->
-<div class="modal-overlay" id="modal">
-  <div class="modal">
-    <div class="modal-header">
-      <h3 id="modal-title"></h3>
-      <button class="modal-close" onclick="closeModal()">✕</button>
-    </div>
-    <div class="modal-body">
-      <p id="modal-desc"></p>
-      <div class="portfolio-list" id="modal-portfolio"></div>
-    </div>
-  </div>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script>
-/*I18N*/
-const i18n = {
-  ru: {
-    window_title: 'Kilo: портфолио',
-    posts_count: '9 записей',
-    btn_message: '✉ Написать',
-    btn_follow: '+ Подписаться',
-    tab_profile: 'profile', tab_skills: 'interests', tab_blog: 'notices', tab_contacts: 'contacts',
-    meta_pronouns: 'he/him', meta_nationality: 'russian', meta_role: 'student · developer',
-    profile_desc: 'Здравствуйте ♡ Я Марат Хайруллин, также известен как Kilo или KilofSweet. Мне 19 лет и я увлекаюсь изучением всего, начиная 3D, заканчивая БД. Люблю монтировать и веду свой ютуб канал, буду рад если подпишитесь. А ещё шейдеры это круто, Vulkan и OpenGL <3',
-    likes_title: 'Likes', likes_list: 'веб-дизайн, музыка, шейдеры, видеоигры, ночной кодинг, аниме-эстетика',
-    dislikes_title: 'Dislikes', dislikes_list: 'баги, понедельники, медленный интернет',
-    now_playing: '♪ Сейчас играет: WR3CK3D - Ритуал ♪',
-    skill_1_title: 'Frontend', skill_1_desc: 'React, Vue, WebGL, анимации',
-    skill_2_title: 'Backend', skill_2_desc: 'Node.js, Python, базы данных',
-    skill_3_title: 'Design', skill_3_desc: 'UI/UX, Figma, брендинг',
-    skill_4_title: 'Motion', skill_4_desc: 'After Effects, 3D, шейдеры',
-    blog_1_title: 'WebGL: первый опыт с Three.js',
-    contact_email: 'Email'
-  },
-  en: {
-    window_title: 'Kilo: portfolio',
-    posts_count: '9 posts',
-    btn_message: '✉ Message',
-    btn_follow: '+ Follow',
-    tab_profile: 'profile', tab_skills: 'interests', tab_blog: 'notices', tab_contacts: 'contacts',
-    meta_pronouns: 'he/him', meta_nationality: 'russian', meta_role: 'student · developer',
-    profile_desc: 'Hello ♡ I\'m Marat Khayrullin, also known as Kilo or KilofSweet. I\'m 19 years old and I\'m passionate about learning everything, from 3D to databases. I love video editing and run my own YouTube channel, I\'d be glad if you subscribe. Also, shaders are cool, Vulkan and OpenGL <3',
-    likes_title: 'Likes', likes_list: 'webdesign, music, shaders, video games, night coding, anime aesthetics',
-    dislikes_title: 'Dislikes', dislikes_list: 'bugs, monday mornings, slow internet',
-    now_playing: '♪ Now playing: WR3CK3D - Ритуал ♪',
-    skill_1_title: 'Frontend', skill_1_desc: 'React, Vue, WebGL, animations',
-    skill_2_title: 'Backend', skill_2_desc: 'Node.js, Python, databases',
-    skill_3_title: 'Design', skill_3_desc: 'UI/UX, Figma, branding',
-    skill_4_title: 'Motion', skill_4_desc: 'After Effects, 3D, shaders',
-    blog_1_title: 'WebGL: first experience with Three.js',
-    contact_email: 'Email'
-  },
-  cn: {
-    window_title: 'Kilo: 作品集',
-    posts_count: '9 条帖子',
-    btn_message: '✉ 发消息',
-    btn_follow: '+ 关注',
-    tab_profile: 'profile', tab_skills: 'interests', tab_blog: 'notices', tab_contacts: 'contacts',
-    meta_pronouns: 'he/him', meta_nationality: 'russian', meta_role: '学生 · 开发者',
-    profile_desc: '你好 ♡ 我是马拉特·海鲁林，也被称为 Kilo 或 KilofSweet。我 19 岁，热衷于学习从 3D 到数据库的一切。我喜欢视频剪辑并运营着自己的 YouTube 频道，如果您能订阅我将不胜感激。另外，着色器很酷，Vulkan 和 OpenGL <3',
-    likes_title: '喜欢', likes_list: '网页设计、音乐、着色器、电子游戏、深夜编程、动漫美学',
-    dislikes_title: '不喜欢', dislikes_list: 'bug、周一早晨、慢网速',
-    now_playing: '♪ 正在播放: WR3CK3D - Ритуал ♪',
-    skill_1_title: '前端', skill_1_desc: 'React、Vue、WebGL、动画',
-    skill_2_title: '后端', skill_2_desc: 'Node.js、Python、数据库',
-    skill_3_title: '设计', skill_3_desc: 'UI/UX、Figma、品牌',
-    skill_4_title: '动态', skill_4_desc: 'After Effects、3D、着色器',
-    blog_1_title: 'WebGL：Three.js的初体验',
-    contact_email: '邮箱'
-  }
-};
-
-const blogData = {
-  blog1: {
-    title: { ru: 'WebGL: первый опыт с Three.js', en: 'WebGL: first experience with Three.js', cn: 'WebGL：Three.js的初体验' },
-    desc: { 
-      ru: 'Полное погружение в мир шейдеров и 3D-графики в браузере. Разбираем создание кастомных материалов, работу с буферами и оптимизацию рендера для плавных 60 FPS.', 
-      en: 'A deep dive into shaders and 3D graphics in the browser. We cover custom materials, buffer manipulation, and render optimization for smooth 60 FPS.',
-      cn: '深入探讨浏览器中的着色器和3D图形。我们涵盖自定义材质、缓冲区操作和渲染优化，以实现流畅的60 FPS。'
-    },
-    portfolio: []
-  },
-};
-
-const skillData = {
-  frontend: {
-    title: { ru: 'Frontend разработка', en: 'Frontend Development', cn: '前端开发' },
-    desc: {
-      ru: 'UI/UX дизайн, Figma, Photoshop. Создание удобных и эстетичных пользовательских путей.',
-      en: 'UI/UX design, Figma, Photoshop. Creating intuitive and aesthetically pleasing user journeys.',
-      cn: 'UI/UX设计，Figma，Photoshop。打造直观且美观的用户体验。'
-    },
-    portfolio: [
-      { ru: 'Прототипы интерфейсов в Figma', en: 'UI/UX prototypes in Figma', cn: 'Figma界面原型' },
-      { ru: 'Дизайн-системы и макеты', en: 'Design systems and layouts', cn: '设计系统与布局' },
-      { ru: 'Визуальная оптимизация проектов', en: 'Visual project optimization', cn: '项目视觉优化' }
-    ]
-  },
-  backend: {
-    title: { ru: 'Backend разработка', en: 'Backend Development', cn: '后端开发' },
-    desc: {
-      ru: 'Python, Java, C, Vulkan, OpenGL. Проектирование и построение баз данных с использованием SQL Power Architect и pgAdmin.',
-      en: 'Python, Java, C, Vulkan, OpenGL. Designing and building databases using SQL Power Architect and pgAdmin.',
-      cn: 'Python, Java, C, Vulkan, OpenGL。使用 SQL Power Architect 和 pgAdmin 设计和构建数据库。'
-    },
-    portfolio: [
-      { ru: 'Архитектура БД в SQL Power Architect', en: 'DB architecture in SQL Power Architect', cn: 'SQL Power Architect 数据库架构' },
-      { ru: 'Графические приложения на C/Vulkan', en: 'Graphics apps in C/Vulkan', cn: 'C/Vulkan 图形应用' },
-      { ru: 'Серверная логика на Python/Java', en: 'Server logic in Python/Java', cn: 'Python/Java 服务器逻辑' }
-    ]
-  },
-  design: {
-    title: { ru: 'Дизайн', en: 'Design', cn: '设计' },
-    desc: {
-      ru: 'Визуальная композиция, UI/UX концепции, работа с графикой и цветом в Photoshop. Внимание к деталям и эстетике.',
-      en: 'Visual composition, UI/UX concepts, graphics and color work in Photoshop. Attention to detail and aesthetics.',
-      cn: '视觉构图，UI/UX概念，在Photoshop中进行图形和色彩处理。注重细节与美学。'
-    },
-    portfolio: [
-      { ru: 'Концепт-арт и иллюстрации', en: 'Concept art and illustrations', cn: '概念艺术与插画' },
-      { ru: 'Обработка и ретушь в Photoshop', en: 'Photoshop editing and retouching', cn: 'Photoshop 编辑与修饰' },
-      { ru: 'Разработка визуального стиля', en: 'Visual style development', cn: '视觉风格开发' }
-    ]
-  },
-  motion: {
-    title: { ru: 'Motion Design', en: 'Motion Design', cn: '动态设计' },
-    desc: {
-      ru: 'After Effects, Premiere Pro, DaVinci Resolve, 3D-моделирование и анимация в Blender. Создание динамичного визуального контента.',
-      en: 'After Effects, Premiere Pro, DaVinci Resolve, 3D modeling and animation in Blender. Creating dynamic visual content.',
-      cn: 'After Effects, Premiere Pro, DaVinci Resolve, Blender 3D建模与动画。打造动态视觉内容。'
-    },
-    portfolio: [
-      { ru: 'Монтаж и цветокоррекция в DaVinci', en: 'Editing and color grading in DaVinci', cn: 'DaVinci 剪辑与调色' },
-      { ru: '3D-моделирование и рендер в Blender', en: '3D modeling and rendering in Blender', cn: 'Blender 3D建模与渲染' },
-      { ru: 'Motion-дизайн в After Effects', en: 'Motion design in After Effects', cn: 'After Effects 动态设计' }
-    ]
-  }
-};
-
-let currentLang = 'ru';
-function setLang(lang) {
-  currentLang = lang;
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    if (i18n[lang][key]) el.innerHTML = i18n[lang][key];
-  });
-  document.querySelectorAll('.lang-switcher-inline button').forEach(b => {
-    b.classList.toggle('active', b.dataset.lang === lang);
-  });
-}
-document.querySelectorAll('.lang-switcher-inline button').forEach(btn => {
-  btn.addEventListener('click', () => setLang(btn.dataset.lang));
-});
-
-/*ATABS*/
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    tab.classList.add('active');
-    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
-  });
-});
-
-
-function spawnSnowflake(x, y) {
-  const el = document.createElement('div');
-  el.textContent = Math.random() > 0.5 ? '❄' : '✦';
-  el.style.left = (x - 6) + 'px';
-  el.style.top = (y - 6) + 'px';
-  document.body.appendChild(el);
-  
-  requestAnimationFrame(() => {
-    el.style.transform = `translateY(${Math.random() * 40 + 20}px) translateX(${(Math.random() - 0.5) * 30}px) rotate(${Math.random() * 180}deg)`;
-    el.style.opacity = '0';
-  });
-  
-  setTimeout(() => el.remove(), 800);
-}
-
-document.querySelectorAll('a, button, .skill-card, .blog-item, .portfolio-item, .social-icon, .win-btn').forEach(el => {
-  el.addEventListener('mouseenter', () => {
-    ring.style.width = '48px';
-    ring.style.height = '48px';
-    ring.style.borderColor = 'var(--text-dark)';
-  });
-  el.addEventListener('mouseleave', () => {
-    ring.style.width = '32px';
-    ring.style.height = '32px';
-    ring.style.borderColor = 'var(--accent)';
-  });
-});
-
-/*MODAL LOGIC (Skills + Blog)*/
-document.querySelectorAll('[data-type]').forEach(el => {
-  el.addEventListener('click', () => {
-    const type = el.dataset.type;
-    const key = el.dataset.key;
-    const data = type === 'skill' ? skillData[key] : blogData[key];
-    
-    if (!data) return;
-    
-    document.getElementById('modal-title').textContent = data.title[currentLang];
-    document.getElementById('modal-desc').textContent = data.desc[currentLang];
-    
-    const list = document.getElementById('modal-portfolio');
-    if (data.portfolio && data.portfolio.length > 0) {
-      list.innerHTML = data.portfolio.map(p => 
-        `<div class="portfolio-item"><span>${p[currentLang]}</span><span>→</span></div>`
-      ).join('');
-      list.style.display = 'flex';
-    } else {
-      list.style.display = 'none';
-    }
-    
-    document.getElementById('modal').classList.add('active');
-  });
-});
-
-function closeModal() {
-  document.getElementById('modal').classList.remove('active');
-}
-document.getElementById('modal').addEventListener('click', e => {
-  if (e.target.id === 'modal') closeModal();
-});
-
-/*WEBGL:SNOW/SOFT PARTICLES*/
-const canvas = document.getElementById('webgl-canvas');
-const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.z = 8;
-
-const snowCount = 400;
-const snowGeo = new THREE.BufferGeometry();
-const snowPos = new Float32Array(snowCount * 3);
-const snowSizes = new Float32Array(snowCount);
-
-for (let i = 0; i < snowCount; i++) {
-  snowPos[i * 3] = (Math.random() - 0.5) * 20;
-  snowPos[i * 3 + 1] = (Math.random() - 0.5) * 20;
-  snowPos[i * 3 + 2] = (Math.random() - 0.5) * 10 - 2;
-  snowSizes[i] = Math.random() * 0.08 + 0.03;
-}
-
-snowGeo.setAttribute('position', new THREE.BufferAttribute(snowPos, 3));
-snowGeo.setAttribute('size', new THREE.BufferAttribute(snowSizes, 1));
-
-const snowMat = new THREE.ShaderMaterial({
-  uniforms: {
-    uTime: { value: 0 },
-    uColor: { value: new THREE.Color(0xffffff) }
-  },
-  vertexShader: `
-    attribute float size;
-    varying float vAlpha;
-    uniform float uTime;
-    void main() {
-      vec3 pos = position;
-      pos.y -= mod(uTime * 0.3 + position.x * 0.1, 20.0) - 10.0;
-      pos.x += sin(uTime * 0.5 + position.y) * 0.3;
-      vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-      gl_PointSize = size * 300.0 / -mvPosition.z;
-      gl_Position = projectionMatrix * mvPosition;
-      vAlpha = smoothstep(-10.0, 10.0, pos.y) * 0.6;
-    }
-  `,
-  fragmentShader: `
-    uniform vec3 uColor;
-    varying float vAlpha;
-    void main() {
-      float d = length(gl_PointCoord - 0.5);
-      if (d > 0.5) discard;
-      float alpha = smoothstep(0.5, 0.1, d) * vAlpha;
-      gl_FragColor = vec4(uColor, alpha);
-    }
-  `,
-  transparent: true,
-  depthWrite: false,
-  blending: THREE.AdditiveBlending
-});
-
-const snow = new THREE.Points(snowGeo, snowMat);
-scene.add(snow);
-
-const bokehCount = 30;
-const bokehGeo = new THREE.BufferGeometry();
-const bokehPos = new Float32Array(bokehCount * 3);
-const bokehSizes = new Float32Array(bokehCount);
-
-for (let i = 0; i < bokehCount; i++) {
-  bokehPos[i * 3] = (Math.random() - 0.5) * 15;
-  bokehPos[i * 3 + 1] = (Math.random() - 0.5) * 15;
-  bokehPos[i * 3 + 2] = (Math.random() - 0.5) * 5 - 3;
-  bokehSizes[i] = Math.random() * 0.3 + 0.1;
-}
-
-bokehGeo.setAttribute('position', new THREE.BufferAttribute(bokehPos, 3));
-bokehGeo.setAttribute('size', new THREE.BufferAttribute(bokehSizes, 1));
-
-const bokehMat = new THREE.ShaderMaterial({
-  uniforms: {
-    uTime: { value: 0 },
-    uColor1: { value: new THREE.Color(0xa8c8e8) },
-    uColor2: { value: new THREE.Color(0xffffff) }
-  },
-  vertexShader: `
-    attribute float size;
-    varying float vAlpha;
-    varying vec2 vPos;
-    uniform float uTime;
-    void main() {
-      vec3 pos = position;
-      pos.y += sin(uTime * 0.2 + position.x) * 0.5;
-      pos.x += cos(uTime * 0.15 + position.y) * 0.3;
-      vPos = pos.xy;
-      vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-      gl_PointSize = size * 400.0 / -mvPosition.z;
-      gl_Position = projectionMatrix * mvPosition;
-      vAlpha = 0.15;
-    }
-  `,
-  fragmentShader: `
-    uniform vec3 uColor1;
-    uniform vec3 uColor2;
-    varying float vAlpha;
-    varying vec2 vPos;
-    void main() {
-      float d = length(gl_PointCoord - 0.5);
-      if (d > 0.5) discard;
-      float alpha = smoothstep(0.5, 0.0, d) * vAlpha;
-      vec3 col = mix(uColor1, uColor2, sin(vPos.x * 2.0) * 0.5 + 0.5);
-      gl_FragColor = vec4(col, alpha);
-    }
-  `,
-  transparent: true,
-  depthWrite: false,
-  blending: THREE.AdditiveBlending
-});
-
-const bokeh = new THREE.Points(bokehGeo, bokehMat);
-scene.add(bokeh);
-
-let targetMX = 0, targetMY = 0;
-document.addEventListener('mousemove', e => {
-  targetMX = (e.clientX / window.innerWidth - 0.5) * 2;
-  targetMY = (e.clientY / window.innerHeight - 0.5) * 2;
-});
-
-const clock = new THREE.Clock();
-function animate() {
-  const t = clock.getElapsedTime();
-  snowMat.uniforms.uTime.value = t;
-  bokehMat.uniforms.uTime.value = t;
-
-  camera.position.x += (targetMX * 0.5 - camera.position.x) * 0.03;
-  camera.position.y += (-targetMY * 0.5 - camera.position.y) * 0.03;
-  camera.lookAt(scene.position);
-
-  snow.rotation.y = t * 0.02;
-  bokeh.rotation.y = -t * 0.01;
-
-  renderer.render(scene, camera);
-  requestAnimationFrame(animate);
-}
-animate();
-
-window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-});
-</script>
-
+  <!-- Подключение библиотек и скриптов -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
