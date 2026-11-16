@@ -8,8 +8,8 @@ const i18n = {
     tab_profile: 'profile', tab_skills: 'interests', tab_blog: 'notices', tab_contacts: 'contacts',
     meta_pronouns: 'he/him', meta_nationality: 'russian', meta_role: 'student · developer',
     profile_desc: 'Здравствуйте ♡ Я Марат Хайруллин, также известен как Kilo или KilofSweet. Мне 19 лет и я увлекаюсь изучением всего, начиная 3D, заканчивая БД. Люблю монтировать и веду свой ютуб канал, буду рад если подпишитесь. А ещё шейдеры это круто, Vulkan и OpenGL <3',
-    likes_title: 'Likes', likes_list: "мармелад, видеоигры, сериалы, музыка, зимняя эстетика",
-    dislikes_title: 'Dislikes', dislikes_list: "стоять полчаса на остановке в мороз, рано просыпаться, тревожность",
+    likes_title: 'Likes', likes_list: 'мармелад, видеоигры, сериалы, музыка, зимняя эстетика',
+    dislikes_title: 'Dislikes', dislikes_list: 'стоять полчаса на остановке в мороз, просыпаться очень рано, тревожность',
     now_playing: '♪ Сейчас играет: WR3CK3D - Ритуал ♪',
     skill_1_title: 'Frontend', skill_1_desc: 'UI/UX дизайн, Figma, Photoshop',
     skill_2_title: 'Backend', skill_2_desc: 'Python, Java, C, Vulkan, OpenGL, БД (SQL Power Architect, pgAdmin)',
@@ -26,8 +26,8 @@ const i18n = {
     tab_profile: 'profile', tab_skills: 'interests', tab_blog: 'notices', tab_contacts: 'contacts',
     meta_pronouns: 'he/him', meta_nationality: 'russian', meta_role: 'student · developer',
     profile_desc: 'Hello ♡ I\'m Marat Khayrullin, also known as Kilo or KilofSweet. I\'m 19 years old and I\'m passionate about learning everything, from 3D to databases. I love video editing and run my own YouTube channel, I\'d be glad if you subscribe. Also, shaders are cool, Vulkan and OpenGL <3',
-    likes_title: 'Likes', likes_list: "gummy candies, video games, TV shows, music, winter aesthetics",
-    dislikes_title: 'Dislikes', dislikes_list: "standing at a bus stop in the freezing cold for half an hour, waking up early, anxiety",
+    likes_title: 'Likes', likes_list: 'gummy candy, video games, TV shows, music, winter aesthetics',
+    dislikes_title: 'Dislikes', dislikes_list: 'standing at a bus stop in the cold for half an hour, waking up very early, anxious',
     now_playing: '♪ Now playing: WR3CK3D - Ритуал ♪',
     skill_1_title: 'Frontend', skill_1_desc: 'UI/UX design, Figma, Photoshop',
     skill_2_title: 'Backend', skill_2_desc: 'Python, Java, C, Vulkan, OpenGL, databases (SQL Power Architect, pgAdmin)',
@@ -44,8 +44,8 @@ const i18n = {
     tab_profile: 'profile', tab_skills: 'interests', tab_blog: 'notices', tab_contacts: 'contacts',
     meta_pronouns: 'he/him', meta_nationality: 'russian', meta_role: '学生 · 开发者',
     profile_desc: '你好 ♡ 我是马拉特·海鲁林，也被称为 Kilo 或 KilofSweet。我 19 岁，热衷于学习从 3D 到数据库的一切。我喜欢视频剪辑并运营着自己的 YouTube 频道，如果您能订阅我将不胜感激。另外，着色器很酷，Vulkan 和 OpenGL <3',
-    likes_title: '喜欢', likes_list: "软糖、电子游戏、电视剧、音乐、冬日美学",
-    dislikes_title: '不喜欢', dislikes_list: "在寒风中站在公交车站半小时、早起、焦虑",,
+    likes_title: 'Likes', likes_list: '软糖、电子游戏、电视剧、音乐、冬日美学',
+    dislikes_title: 'Dislikes', dislikes_list: '在寒风中站在公交车站半小时、早起、焦虑',
     now_playing: '♪ 正在播放: WR3CK3D - Ритуал ♪',
     skill_1_title: '前端', skill_1_desc: 'UI/UX设计，Figma，Photoshop',
     skill_2_title: '后端', skill_2_desc: 'Python, Java, C, Vulkan, OpenGL, 数据库 (SQL Power Architect, pgAdmin)',
@@ -56,95 +56,185 @@ const i18n = {
   }
 };
 
-const blogData = {
-  blog1: {
-    title: { ru: 'Как ходить', en: 'How to walk', cn: '如何行走' },
-    desc: { 
-      ru: 'idk.', 
-      en: 'idk.',
-      cn: 'idk。'
-    },
-    portfolio: []
-  },
-};
+/* =========================================================
+   CONTENT MANAGER
+   Здесь редактируются все работы в Interests и статьи Notices.
+   Пути к файлам указывай относительно index.html.
+   ========================================================= */
 
 const skillData = {
   frontend: {
     title: { ru: 'Frontend разработка', en: 'Frontend Development', cn: '前端开发' },
     desc: {
       ru: 'UI/UX дизайн, Figma, Photoshop. Создание удобных и эстетичных пользовательских путей.',
-      en: 'UI/UX design, Figma, Photoshop. Creating intuitive and aesthetically pleasing user journeys.',
-      cn: 'UI/UX设计，Figma，Photoshop。打造直观且美观的用户体验。'
+      en: 'UI/UX design, Figma, Photoshop. Select a work sample to view it.',
+      cn: 'UI/UX设计、Figma、Photoshop。选择一个作品查看。'
     },
     portfolio: [
-      { ru: 'Прототипы интерфейсов в Figma', en: 'UI/UX prototypes in Figma', cn: 'Figma界面原型' },
-      { ru: 'Дизайн-системы и макеты', en: 'Design systems and layouts', cn: '设计系统与布局' },
-      { ru: 'Визуальная оптимизация проектов', en: 'Visual project optimization', cn: '项目视觉优化' }
+      {
+        title: { ru: 'Прототипы интерфейсов в Figma', en: 'UI prototypes in Figma', cn: 'Figma 界面原型' },
+        description: { ru: 'Примеры прототипов и пользовательских интерфейсов.', en: 'Examples of prototypes and user interfaces.', cn: '原型和用户界面示例。' },
+        video_mp4: '', // Например: 'media/figma-demo.mp4'
+        image_jpg: '', // Например: 'images/figma-prototype.jpg'
+        link_da: ''   // Например: 'https://drive.google.com/file/d/ВАШ_ID/view'
+      },
+      {
+        title: { ru: 'Дизайн-системы и макеты', en: 'Design systems and layouts', cn: '设计系统与布局' },
+        description: { ru: 'Примеры макетов и компонентов.', en: 'Examples of layouts and components.', cn: '布局和组件示例。' },
+        video_mp4: '', image_jpg: '', link_da: ''
+      },
+      {
+        title: { ru: 'Визуальная оптимизация проектов', en: 'Visual project optimization', cn: '项目视觉优化' },
+        description: { ru: 'Примеры доработки визуальной части проектов.', en: 'Examples of visual improvements to projects.', cn: '项目视觉优化示例。' },
+        video_mp4: '', image_jpg: '', link_da: ''
+      }
     ]
   },
   backend: {
     title: { ru: 'Backend разработка', en: 'Backend Development', cn: '后端开发' },
     desc: {
       ru: 'Python, Java, C, Vulkan, OpenGL. Проектирование и построение баз данных с использованием SQL Power Architect и pgAdmin.',
-      en: 'Python, Java, C, Vulkan, OpenGL. Designing and building databases using SQL Power Architect and pgAdmin.',
-      cn: 'Python, Java, C, Vulkan, OpenGL。使用 SQL Power Architect 和 pgAdmin 设计和构建数据库。'
+      en: 'Python, Java, C, Vulkan, OpenGL and databases. Select a work sample to view it.',
+      cn: 'Python、Java、C、Vulkan、OpenGL 和数据库。选择一个作品查看。'
     },
     portfolio: [
-      { ru: 'Архитектура БД в SQL Power Architect', en: 'DB architecture in SQL Power Architect', cn: 'SQL Power Architect 数据库架构' },
-      { ru: 'Графические приложения на C/Vulkan', en: 'Graphics apps in C/Vulkan', cn: 'C/Vulkan 图形应用' },
-      { ru: 'Серверная логика на Python/Java', en: 'Server logic in Python/Java', cn: 'Python/Java 服务器逻辑' }
+      {
+        title: { ru: 'Архитектура БД в SQL Power Architect', en: 'Database architecture in SQL Power Architect', cn: 'SQL Power Architect 数据库架构' },
+        description: { ru: 'Схемы и модели баз данных.', en: 'Database schemas and models.', cn: '数据库 схем和模型。' },
+        video_mp4: '', image_jpg: '', link_da: ''
+      },
+      {
+        title: { ru: 'Графические приложения на C/Vulkan', en: 'Graphics applications in C/Vulkan', cn: 'C/Vulkan 图形应用' },
+        description: { ru: 'Демонстрации графических приложений.', en: 'Graphics application demonstrations.', cn: '图形应用演示。' },
+        video_mp4: '', image_jpg: '', link_da: ''
+      },
+      {
+        title: { ru: 'Серверная логика на Python/Java', en: 'Backend logic in Python/Java', cn: 'Python/Java 服务端逻辑' },
+        description: { ru: 'Примеры серверной логики и кода.', en: 'Examples of backend logic and code.', cn: '服务端逻辑和代码示例。' },
+        video_mp4: '', image_jpg: '', link_da: ''
+      }
     ]
   },
   design: {
     title: { ru: 'Дизайн', en: 'Design', cn: '设计' },
     desc: {
       ru: 'Визуальная композиция, UI/UX концепции, работа с графикой и цветом в Photoshop. Внимание к деталям и эстетике.',
-      en: 'Visual composition, UI/UX concepts, graphics and color work in Photoshop. Attention to detail and aesthetics.',
-      cn: '视觉构图，UI/UX概念，在Photoshop中进行图形和色彩处理。注重细节与美学。'
+      en: 'Visual composition, UI/UX concepts, graphics and color. Select a work sample to view it.',
+      cn: '视觉构图、UI/UX 概念、图形和色彩。选择一个作品查看。'
     },
     portfolio: [
-      { ru: 'Концепт-арт и иллюстрации', en: 'Concept art and illustrations', cn: '概念艺术与插画' },
-      { ru: 'Обработка и ретушь в Photoshop', en: 'Photoshop editing and retouching', cn: 'Photoshop 编辑与修饰' },
-      { ru: 'Разработка визуального стиля', en: 'Visual style development', cn: '视觉风格开发' }
+      {
+        title: { ru: 'Концепт-арт и иллюстрации', en: 'Concept art and illustrations', cn: '概念艺术与插画' },
+        description: { ru: 'Подборка концептов и иллюстраций.', en: 'A collection of concepts and illustrations.', cn: '概念和插画合集。' },
+        video_mp4: '', image_jpg: '', link_da: ''
+      },
+      {
+        title: { ru: 'Обработка и ретушь в Photoshop', en: 'Photoshop editing and retouching', cn: 'Photoshop 编辑与修饰' },
+        description: { ru: 'Примеры обработки изображений.', en: 'Image editing examples.', cn: '图像处理示例。' },
+        video_mp4: '', image_jpg: '', link_da: ''
+      },
+      {
+        title: { ru: 'Разработка визуального стиля', en: 'Visual identity development', cn: '视觉风格设计' },
+        description: { ru: 'Примеры визуальных концепций.', en: 'Examples of visual concepts.', cn: '视觉概念示例。' },
+        video_mp4: '', image_jpg: '', link_da: ''
+      }
     ]
   },
   motion: {
     title: { ru: 'Motion Design', en: 'Motion Design', cn: '动态设计' },
     desc: {
       ru: 'After Effects, Premiere Pro, DaVinci Resolve, 3D-моделирование и анимация в Blender. Создание динамичного визуального контента.',
-      en: 'After Effects, Premiere Pro, DaVinci Resolve, 3D modeling and animation in Blender. Creating dynamic visual content.',
-      cn: 'After Effects, Premiere Pro, DaVinci Resolve, Blender 3D建模与动画。打造动态视觉内容。'
+      en: 'After Effects, Premiere Pro, DaVinci Resolve and Blender. Select a work sample to view it.',
+      cn: 'After Effects、Premiere Pro、DaVinci Resolve 和 Blender。选择一个作品查看。'
     },
     portfolio: [
-      { ru: 'Монтаж и цветокоррекция в DaVinci', en: 'Editing and color grading in DaVinci', cn: 'DaVinci 剪辑与调色' },
-      { ru: '3D-моделирование и рендер в Blender', en: '3D modeling and rendering in Blender', cn: 'Blender 3D建模与渲染' },
-      { ru: 'Motion-дизайн в After Effects', en: 'Motion design in After Effects', cn: 'After Effects 动态设计' }
+      {
+        title: { ru: 'Монтаж и цветокоррекция в DaVinci', en: 'Editing and color grading in DaVinci', cn: 'DaVinci 剪辑与调色' },
+        description: { ru: 'Примеры видеомонтажа и цветокоррекции.', en: 'Video editing and color grading examples.', cn: '视频剪辑和调色示例。' },
+        video_mp4: '', image_jpg: '', link_da: ''
+      },
+      {
+        title: { ru: '3D-моделирование и рендер в Blender', en: '3D modeling and rendering in Blender', cn: 'Blender 3D 建模与渲染' },
+        description: { ru: 'Примеры 3D-моделей и рендеров.', en: '3D model and render examples.', cn: '3D 模型和渲染示例。' },
+        video_mp4: '', image_jpg: '', link_da: ''
+      },
+      {
+        title: { ru: 'Motion-дизайн в After Effects', en: 'Motion design in After Effects', cn: 'After Effects 动态设计' },
+        description: { ru: 'Примеры анимации и motion-графики.', en: 'Animation and motion graphics examples.', cn: '动画和动态图形示例。' },
+        video_mp4: '', image_jpg: '', link_da: ''
+      }
     ]
   }
 };
 
+/* =========================================================
+   NOTICES / BLOG
+   Новая статья = новый объект в blogData.
+   body — массив абзацев. image_jpg — путь к обложке/изображению.
+   ========================================================= */
+const blogData = {
+  blog1: {
+    date: '2026.10.15',
+    tag: 'LIFE',
+    title: { ru: 'Как ходить', en: 'How to walk', cn: '如何行走' },
+    desc: {
+      ru: 'Небольшая заметка.',
+      en: 'A short note.',
+      cn: '一篇简短的笔记。'
+    },
+    body: {
+      ru: [
+        'Здесь начинается текст твоей статьи. Можешь заменить этот абзац своим текстом.',
+        'Чтобы добавить следующий абзац, добавь ещё одну строку в этот массив.'
+      ],
+      en: [
+        'Your article starts here. Replace this paragraph with your own text.',
+        'To add another paragraph, add another string to this array.'
+      ],
+      cn: [
+        '文章从这里开始。你可以将这段文字替换为自己的内容。',
+        '要添加新段落，请在此数组中添加另一条字符串。'
+      ]
+    },
+    image_jpg: '' // Например: 'images/blog-walk.jpg'
+  }
+};
+
 let currentLang = 'ru';
+const modal = document.getElementById('modal');
+const modalTitle = document.getElementById('modal-title');
+const modalDesc = document.getElementById('modal-desc');
+const modalPortfolio = document.getElementById('modal-portfolio');
+const modalMedia = document.getElementById('modal-media');
+
+function localized(value) {
+  if (typeof value === 'string') return value;
+  return value?.[currentLang] || value?.ru || '';
+}
+
 function setLang(lang) {
   currentLang = lang;
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
-    if (i18n[lang][key]) el.innerHTML = i18n[lang][key];
+    if (i18n[lang] && i18n[lang][key]) el.textContent = i18n[lang][key];
   });
-  document.querySelectorAll('.lang-switcher-inline button').forEach(b => {
-    b.classList.toggle('active', b.dataset.lang === lang);
+  document.querySelectorAll('.lang-switcher-inline button').forEach(button => {
+    button.classList.toggle('active', button.dataset.lang === lang);
   });
+  renderBlogList();
 }
-document.querySelectorAll('.lang-switcher-inline button').forEach(btn => {
-  btn.addEventListener('click', () => setLang(btn.dataset.lang));
+
+document.querySelectorAll('.lang-switcher-inline button').forEach(button => {
+  button.addEventListener('click', () => setLang(button.dataset.lang));
 });
 
 /* TABS */
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(item => item.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(item => item.classList.remove('active'));
     tab.classList.add('active');
-    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+    document.getElementById('tab-' + tab.dataset.tab)?.classList.add('active');
   });
 });
 
@@ -154,48 +244,190 @@ function spawnSnowflake(x, y) {
   el.style.left = (x - 6) + 'px';
   el.style.top = (y - 6) + 'px';
   document.body.appendChild(el);
-  
   requestAnimationFrame(() => {
     el.style.transform = `translateY(${Math.random() * 40 + 20}px) translateX(${(Math.random() - 0.5) * 30}px) rotate(${Math.random() * 180}deg)`;
     el.style.opacity = '0';
   });
-  
   setTimeout(() => el.remove(), 800);
 }
 
-
-/* MODAL LOGIC (Skills + Blog) */
-document.querySelectorAll('[data-type]').forEach(el => {
-  el.addEventListener('click', () => {
-    const type = el.dataset.type;
-    const key = el.dataset.key;
-    const data = type === 'skill' ? skillData[key] : blogData[key];
-    
-    if (!data) return;
-    
-    document.getElementById('modal-title').textContent = data.title[currentLang];
-    document.getElementById('modal-desc').textContent = data.desc[currentLang];
-    
-    const list = document.getElementById('modal-portfolio');
-    if (data.portfolio && data.portfolio.length > 0) {
-      list.innerHTML = data.portfolio.map(p => 
-        `<div class="portfolio-item"><span>${p[currentLang]}</span><span>→</span></div>`
-      ).join('');
-      list.style.display = 'flex';
-    } else {
-      list.style.display = 'none';
-    }
-    
-    document.getElementById('modal').classList.add('active');
-  });
-});
-
-function closeModal() {
-  document.getElementById('modal').classList.remove('active');
+function clearModalContent() {
+  modalDesc.textContent = '';
+  modalPortfolio.replaceChildren();
+  modalMedia.replaceChildren();
+  modalMedia.classList.remove('active');
+  modalPortfolio.style.display = 'flex';
 }
-document.getElementById('modal').addEventListener('click', e => {
-  if (e.target.id === 'modal') closeModal();
+
+function openModal() {
+  modal.classList.add('active');
+  document.body.classList.add('modal-open');
+}
+
+function openSkill(key) {
+  const data = skillData[key];
+  if (!data) return;
+  clearModalContent();
+  modalTitle.textContent = localized(data.title);
+  modalDesc.textContent = localized(data.desc);
+
+  data.portfolio.forEach((work, index) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'portfolio-item';
+    const label = document.createElement('span');
+    label.textContent = localized(work.title);
+    const arrow = document.createElement('span');
+    arrow.textContent = '→';
+    button.append(label, arrow);
+    button.addEventListener('click', () => openWork(key, index));
+    modalPortfolio.appendChild(button);
+  });
+  openModal();
+}
+
+function openWork(categoryKey, workIndex) {
+  const work = skillData[categoryKey]?.portfolio?.[workIndex];
+  if (!work) return;
+  modalTitle.textContent = localized(work.title);
+  modalDesc.textContent = localized(work.description);
+  modalPortfolio.style.display = 'none';
+  modalMedia.replaceChildren();
+  modalMedia.classList.add('active');
+
+  const back = document.createElement('button');
+  back.type = 'button';
+  back.className = 'media-back';
+  back.textContent = currentLang === 'ru' ? '← Назад к списку работ' : currentLang === 'en' ? '← Back to works' : '← 返回作品列表';
+  back.addEventListener('click', () => openSkill(categoryKey));
+  modalMedia.appendChild(back);
+
+  let hasMedia = false;
+  if ((work.image_jpg || '').trim()) {
+    const image = document.createElement('img');
+    image.className = 'work-image';
+    image.src = work.image_jpg;
+    image.alt = localized(work.title);
+    image.loading = 'lazy';
+    image.addEventListener('error', () => image.replaceWith(makeMediaNotice('Не удалось загрузить изображение: ' + work.image_jpg)));
+    modalMedia.appendChild(image);
+    hasMedia = true;
+  }
+  if ((work.video_mp4 || '').trim()) {
+    const video = document.createElement('video');
+    video.className = 'work-video';
+    video.src = work.video_mp4;
+    video.controls = true;
+    video.preload = 'metadata';
+    modalMedia.appendChild(video);
+    hasMedia = true;
+  }
+  if ((work.link_da || '').trim()) {
+    const link = document.createElement('a');
+    link.className = 'drive-link';
+    link.href = work.link_da;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = currentLang === 'ru' ? 'Открыть работу на Google Drive ↗' : currentLang === 'en' ? 'Open work on Google Drive ↗' : '在 Google Drive 中打开 ↗';
+    modalMedia.appendChild(link);
+    hasMedia = true;
+  }
+  if (!hasMedia) {
+    const notice = makeMediaNotice(currentLang === 'ru'
+      ? 'Материалы пока не добавлены. Укажи путь в video_mp4, image_jpg или ссылку в link_da в script.js.'
+      : currentLang === 'en'
+        ? 'No files added yet. Set video_mp4, image_jpg or link_da in script.js.'
+        : '尚未添加文件。请在 script.js 中设置 video_mp4、image_jpg 或 link_da。');
+    modalMedia.appendChild(notice);
+  }
+}
+
+function makeMediaNotice(message) {
+  const notice = document.createElement('div');
+  notice.className = 'media-notice';
+  notice.textContent = message;
+  return notice;
+}
+
+function renderBlogList() {
+  const list = document.getElementById('blog-list');
+  if (!list) return;
+  list.replaceChildren();
+  const countLabel = document.querySelector('[data-i18n="posts_count"]');
+  if (countLabel) {
+    const count = Object.keys(blogData).length;
+    countLabel.textContent = currentLang === 'ru' ? `${count} записей` : currentLang === 'en' ? `${count} posts` : `${count} 条帖子`;
+  }
+  Object.entries(blogData).forEach(([key, post]) => {
+    const item = document.createElement('button');
+    item.type = 'button';
+    item.className = 'blog-item';
+    item.dataset.key = key;
+
+    const date = document.createElement('span');
+    date.className = 'date';
+    date.textContent = post.date || '';
+    const title = document.createElement('h4');
+    title.textContent = localized(post.title);
+    const tag = document.createElement('span');
+    tag.className = 'tag';
+    tag.textContent = post.tag || 'NOTE';
+    item.append(date, title, tag);
+    item.addEventListener('click', () => openBlogPost(key));
+    list.appendChild(item);
+  });
+}
+
+function openBlogPost(key) {
+  const post = blogData[key];
+  if (!post) return;
+  clearModalContent();
+  modalTitle.textContent = localized(post.title);
+  modalDesc.textContent = localized(post.desc);
+  modalPortfolio.style.display = 'none';
+  modalMedia.classList.add('active');
+
+  if ((post.image_jpg || '').trim()) {
+    const image = document.createElement('img');
+    image.className = 'blog-image';
+    image.src = post.image_jpg;
+    image.alt = localized(post.title);
+    image.loading = 'lazy';
+    image.addEventListener('error', () => image.replaceWith(makeMediaNotice('Не удалось загрузить изображение: ' + post.image_jpg)));
+    modalMedia.appendChild(image);
+  }
+
+  const paragraphs = post.body?.[currentLang] || post.body?.ru || [];
+  paragraphs.forEach(text => {
+    const paragraph = document.createElement('p');
+    paragraph.className = 'article-paragraph';
+    paragraph.textContent = text;
+    modalMedia.appendChild(paragraph);
+  });
+  openModal();
+}
+
+/* Открытие категорий Interests */
+document.querySelectorAll('.skill-card[data-key]').forEach(card => {
+  card.addEventListener('click', () => openSkill(card.dataset.key));
 });
+
+/* Modal controls */
+function closeModal() {
+  modal.classList.remove('active');
+  document.body.classList.remove('modal-open');
+  modalMedia.querySelectorAll('video').forEach(video => video.pause());
+}
+window.closeModal = closeModal;
+document.querySelector('.modal-close')?.addEventListener('click', closeModal);
+modal.addEventListener('click', event => {
+  if (event.target === modal) closeModal();
+});
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape') closeModal();
+});
+
+renderBlogList();
 
 /* WEBGL: SNOW/SOFT PARTICLES */
 const canvas = document.getElementById('webgl-canvas');
